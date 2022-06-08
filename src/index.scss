@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@200;300;400;500;600;700;800;900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "DM Sans", sans-serif;
+  text-decoration: none;
+}
+
+input {
+  padding: 0 14px;
+  height: 46px;
+  border: none;
+  font-size: 14px;
+  box-shadow: inset #d8d8da 0 0 0 1px, inset #fff 0 0 0 100px !important;
+  border-radius: 10px;
+  &:hover {
+    box-shadow: inset #b1b0b5 0 0 0 1px, inset #fff 0 0 0 100px !important;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: inset #06f 0 0 0 1px, inset #fff 0 0 0 100px !important;
+  }
+  &::placeholder {
+    color: #4f4e51;
+  }
+}
+
+.input-error{
+  box-shadow: inset #FF3333 0 0 0 1px, inset #fff 0 0 0 100px !important;
+}
+
+button {
+  background: #0496ff;
+  border-radius: 10px;
+  height: 46px;
+  border: none;
+  font-size: 16px;
+  color: white;
+  padding: 0 21px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    background: #0388e7;
+  }
+  &:active {
+    background: #0476c7;
+  }
+}
+
+input#name{
+  text-transform: capitalize;
+}
+
+input#name::placeholder{
+  text-transform: none;
+}
