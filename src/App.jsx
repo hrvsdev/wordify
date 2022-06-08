@@ -5,7 +5,7 @@ import Home from "./components/home/Home";
 import Forgot from "./components/auth/Forgot";
 import NotesArea from "./components/home/NotesArea";
 import SingleNote from "./components/home/SingleNote";
-import "./components/auth/auth.scss";
+import "./components/auth/Auth.scss";
 
 export default function App() {
   return (
