@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
-import { createReactEditorJS } from "react-editor-js";
+import EditorJS from "@editorjs/editorjs"
 
 export default function SingleNote() {
-  const instanceRef = useRef(null);
-  const ReactEditorJS = createReactEditorJS();
+
+  new EditorJS({holder: "editor"})
+
   return (
     <div className="right-side">
       <div className="upper-sec">
@@ -27,7 +28,7 @@ export default function SingleNote() {
       </div>
       <hr />
       <div className="editor-wrapper">
-        <ReactEditorJS instanceRef={(i) => (instanceRef.current = i)} />
+        <div id="editor"></div>
       </div>
     </div>
   );
