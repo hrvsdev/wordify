@@ -8,14 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@editorjs/editorjs": "^2.24.3",
+    "@mantine/core": "^4.2.9",
+    "@mantine/hooks": "^4.2.9",
+    "@mantine/rte": "^4.2.9",
     "crypto-js": "^4.1.1",
     "email-validator": "^2.0.4",
     "query-string": "^7.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-editor-js": "^2.0.6",
-    "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
     "sass": "^1.52.1"
   },
