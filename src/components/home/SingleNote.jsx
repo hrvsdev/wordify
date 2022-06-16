@@ -8,23 +8,40 @@ import { RichTextEditor } from "@mantine/rte";
 import editorConfig from "./editorConfig";
 
 export default function SingleNote() {
+  const [titleValue, setTitleValue] = useState("");
+  const [categoryValue, setCategoryValue] = useState("");
   const [editorValue, setEditorValue] = useState("Start writing from here ...");
   const [previewEditor, setPreviewEditor] = useState(false);
 
   const handlePreview = () => {
     setPreviewEditor((prev) => !prev);
   };
-  
+
   const handleSave = () => {
     setPreviewEditor(true);
-    console.log(editorValue)
+    console.log(editorValue);
   };
 
   return (
     <div className="right-side">
       <div className="upper-sec">
         <div className="title-wrapper">
-          <input type="text" placeholder="Enter note title" />
+          {previewEditor ? (
+            titleValue.trim() ? (
+              <div className="title">{titleValue}</div>
+            ) : (
+              <div className="untitle">Untitled note</div>
+            )
+          ) : (
+            <input
+              type="text"
+              placeholder="Enter note title"
+              value={titleValue}
+              onChange={(e) => {
+                setTitleValue(e.target.value);
+              }}
+            />
+          )}
         </div>
         <div className="button-menu-wrapper">
           <div
@@ -42,7 +59,24 @@ export default function SingleNote() {
       <div className="note-info">
         <div className="category-wrapper">
           <p className="info-title">Category</p>
-          <p className="info">General</p>
+          <p className="info">
+            {previewEditor ? (
+              categoryValue.trim() ? (
+                <div className="category">{categoryValue}</div>
+              ) : (
+                <div className="uncategorized">Uncategorized</div>
+              )
+            ) : (
+              <input
+                type="text"
+                placeholder="Enter category here"
+                value={categoryValue}
+                onChange={(e) => {
+                  setCategoryValue(e.target.value);
+                }}
+              />
+            )}
+          </p>
         </div>
         <div className="created-wrapper">
           <p className="info-title">Created at</p>

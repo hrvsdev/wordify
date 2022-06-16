@@ -103,15 +103,15 @@ export default function Login() {
             <p>or continue with</p>
           </div>
           <div className="social-wrapper">
-            <Link title="Google" to="/connect" className="google">
+            <a title="Google" href="http://localhost:5000/auth/google" className="google">
               <img src={google} />
-            </Link>
-            <Link title="Facebook" to="/connect" className="facebook">
+            </a>
+            <a title="Facebook" href="http://localhost:5000/auth/facebook" className="facebook">
               <img src={facebook} />
-            </Link>
-            <Link title="Twitter" to="/connect" className="twitter">
+            </a>
+            <a title="Twitter" href="http://localhost:5000/auth/twitter" className="twitter">
               <img src={twitter} />
-            </Link>
+            </a>
           </div>
           <div className="signup-wrapper">
             Don't have an account? <Link to="/signup">Sign up</Link>

@@ -53,14 +53,18 @@ export default function FolderMenu() {
   const logoutCheckClick = () => {
     navigate("/login");
     logoutBoxRef.current.classList.remove("active-logout");
-  };
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <div className="left-side">
       <div className="upper-sec">
         <div className="user-info-wrapper">
-          <img src="https://i.ibb.co/y5PFwdN/Common-removebg-preview.png" />
-          <p className="user-name">User Name</p>
+          <img src={user.picture} />
+          <p className="user-name">{user.name}</p>
         </div>
         <div className="search-wrapper">
           <img src={searchIcon} />

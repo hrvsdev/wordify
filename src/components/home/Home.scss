@@ -262,6 +262,17 @@
             opacity: 0.8;
           }
         }
+        .title {
+          font-weight: 600;
+          font-size: 35px;
+          color: black;
+        }
+        .untitle {
+          font-weight: 600;
+          font-size: 35px;
+          opacity: 0.5;
+          cursor: default;
+        }
       }
       .button-menu-wrapper {
         display: flex;
@@ -307,6 +318,26 @@
           opacity: 0.9;
         }
       }
+      .category-wrapper {
+        margin-bottom: 5px;
+        p {
+          font-size: 16px;
+        }
+        .info {
+          font-weight: 500;
+        }
+        .uncategorized{
+          opacity: 0.5;
+        }
+        input {
+          all: unset;
+          box-shadow: none !important;
+          &::placeholder {
+            color: black;
+            opacity: 0.8;
+          }
+        }
+      }
     }
     hr {
       border: 0;
@@ -320,6 +351,17 @@
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
+    }
+    .ql-editor {
+      p,
+      li {
+        font-size: 15px;
+      }
+      code {
+        font-size: 13px;
+        font-family: "Cascadia Code";
+        font-weight: 100;
+      }
     }
   }
 }
