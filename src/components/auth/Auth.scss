@@ -4,7 +4,7 @@
   width: 100vw;
   height: 100vh;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   .left-side {
     display: flex;
     height: 100%;
@@ -15,6 +15,7 @@
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       padding: 3rem;
       border-radius: 20px;
+      background: white;
       .logo-wrapper {
         margin-bottom: 6px;
         display: flex;
@@ -60,7 +61,7 @@
           img.otp {
             left: 14px;
           }
-          img.name{
+          img.name {
             width: 20px;
           }
           img.eye {
@@ -153,21 +154,44 @@
   }
 }
 
-.pw-error{
-  margin-bottom: 25px !important
+.pw-error {
+  margin-bottom: 25px !important;
 }
 
-.forgot-container{
+.forgot-container {
   .login-text-wrapper {
     margin-bottom: 5px !important;
   }
-  .forgot-send-to{
+  .forgot-send-to {
     font-size: 14px;
     margin-bottom: 20px;
     color: rgba(0, 0, 0, 0.7);
     text-align: center;
-    span{
+    span {
       color: #0496ff;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .login-container {
+    .left-side {
+      width: 100%;
+      background: rgba(235, 247, 255, 1);
+    }
+    .right-side {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .login-container {
+    .left-side {
+      background: white;
+      .login-wrapper{
+        box-shadow: none;
+      }
     }
   }
 }

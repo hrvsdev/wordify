@@ -1,5 +1,6 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect, useContext } from "react";
+import axios from "axios";
 
 import searchIcon from "../../assets/home/search.svg";
 import folderIcon from "../../assets/home/folder.svg";
@@ -9,6 +10,9 @@ import plusIcon from "../../assets/home/plus.svg";
 import binIcon from "../../assets/home/bin.svg";
 import logoutIcon from "../../assets/home/logout.svg";
 
+import { Context } from "../../context/Context";
+
+// Folder Button Component
 function SideButton({ to, title }) {
   return (
     <NavLink to={to} className="side-button">
@@ -26,16 +30,22 @@ export default function FolderMenu() {
   const logoutCheckRef = useRef();
   const logoutBoxRef = useRef();
 
+  // Context
+  const { user } = useContext(Context);
+
+  // Fake folders
   const [folders, setFolders] = useState([
     { to: "study", title: "Study notes" },
     { to: "personal", title: "Personal notes" },
   ]);
 
+  // Showing input box for folder
   const addFolderFunc = () => {
     addFolderRef.current.classList.add("show");
     addFolderInputRef.current.focus();
   };
 
+  // Adding a folder
   const addFolderCheckFunc = () => {
     const folderName = addFolderInputRef.current.value;
     if (folderName) {
@@ -46,25 +56,29 @@ export default function FolderMenu() {
     addFolderInputRef.current.value = "";
   };
 
+  // Highlight Logout Button
   const logoutBoxClick = (e) => {
     logoutBoxRef.current.classList.toggle("active-logout");
   };
 
-  const logoutCheckClick = () => {
-    navigate("/login");
-    logoutBoxRef.current.classList.remove("active-logout");
-  }
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  // Logging out User
+  const logoutCheckClick = async () => {
+    const url = "http://localhost:5000/logout";
+    try {
+      axios.get(url, { withCredentials: true });
+      logoutBoxRef.current.classList.remove("active-logout");
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="left-side">
       <div className="upper-sec">
         <div className="user-info-wrapper">
-          <img src={user.picture} />
-          <p className="user-name">{user.name}</p>
+          <img src={user?.picture} />
+          <p className="user-name">{user?.name}</p>
         </div>
         <div className="search-wrapper">
           <img src={searchIcon} />

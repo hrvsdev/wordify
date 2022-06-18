@@ -5,19 +5,22 @@ import Home from "./components/home/Home";
 import Forgot from "./components/auth/Forgot";
 import NotesArea from "./components/home/NotesArea";
 import SingleNote from "./components/home/SingleNote";
+import ContextProvider from "./context/Context";
 import "./components/auth/Auth.scss";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />}>
-        <Route path=":folder" element={<NotesArea />}>
-          <Route path=":note" element={<SingleNote />} />
+    <ContextProvider>
+      <Routes>
+        <Route path="/" element={<Home />} >
+          <Route path=":folder" element={<NotesArea />}>
+            <Route path=":note" element={<SingleNote />} />
+          </Route>
         </Route>
-      </Route>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/forgot-password" element={<Forgot />} />
-    </Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<Forgot />} />
+      </Routes>
+    </ContextProvider>
   );
 }

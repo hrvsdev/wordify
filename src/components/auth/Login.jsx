@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { validate } from "email-validator";
-import { AES } from "crypto-js";
+import axios from "axios";
 
 import takingNote from "../../assets/auth/adding-notes.svg";
 import wordify from "../../assets/auth/wordify.svg";
@@ -13,34 +12,76 @@ import passwordIcon from "../../assets/auth/password.svg";
 import eye from "../../assets/auth/eye.svg";
 import eyeOff from "../../assets/auth/eye-off.svg";
 
-export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailInvalid, setEmailInvalid] = useState(false);
-  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
+import { Context } from "../../context/Context";
+import { isEmailInvalid } from "../../helper/auth.helper";
 
+export default function Login() {
+  // Navigation hook
   const navigate = useNavigate();
 
-  const formSubmit = (e) => {
-    e.preventDefault();
-    if (validate(email)) {
-      setEmailInvalid(false);
-      if (password === "harsh.123") {
-        setPasswordIncorrect(false);
-      } else {
+  // Context
+  const { setUser, setForgotEmail } = useContext(Context);
+
+  // Input states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Show password state
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Login response error state
+  const [loginErr, setLoginErr] = useState({});
+
+  // Error states
+  const [emailError, setEmailError] = useState(false);
+  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
+
+  // User data for login
+  const userData = { email: email.trim(), password: password.trim() };
+
+  // Login function
+  const handleLogin = async () => {
+    const url = "http://localhost:5000/local/login";
+    const emailErr = isEmailInvalid(email, setEmailError);
+    if (emailErr) return;
+    try {
+      const res = await axios.post(url, userData, { withCredentials: true });
+      setUser(res.data);
+      navigate("/");
+    } catch (err) {
+      if (err.response.data.type === "EmailNotFound") {
+        setEmailError(true);
+        return setLoginErr(err.response.data);
+      } else if (err.response.data.type === "IncPass") {
         setPasswordIncorrect(true);
       }
-    } else {
-      setEmailInvalid(true);
     }
   };
 
-  const navigateForgotPasswprd = () => {
-    if (validate(email)) {
-      navigate(`/forgot-password?id=${encodeURIComponent(AES.encrypt(email, "MY_SECRET_KEY"))}`);
-    } else {
-      setEmailInvalid(true);
+  // Form submission function
+  const formSubmit = (e) => {
+    e.preventDefault();
+    setLoginErr({});
+    setPasswordIncorrect(false);
+    handleLogin();
+  };
+
+  // Forgot password function
+  const navigateForgotPasswprd = async () => {
+    const url = "http://localhost:5000/forgot-password";
+    const emailErr = isEmailInvalid(email, setEmailError);
+    if (emailErr) return;
+
+    try {
+      await axios.post(url, { email: email.trim() });
+      setForgotEmail(email)
+      navigate("/forgot-password")
+
+    } catch (err) {
+      if (err.response.data.type === "EmailNotFound") {
+        setEmailError(true);
+        return setLoginErr(err.response.data);
+      }
     }
   };
 
@@ -61,15 +102,17 @@ export default function Login() {
             <div className="email-wrapper">
               <img src={emailIcon} className="email" />
               <input
-                className={emailInvalid ? "input-error" : null}
+                className={emailError ? "input-error" : null}
                 type="email"
                 placeholder="Enter your email"
                 id="email"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <p className={`error ${emailInvalid ? "show-error" : null}`}>
-              Email is invalid
+            <p className={`error ${emailError ? "show-error" : null}`}>
+              {loginErr.type === "EmailNotFound"
+                ? "The email you entered doesn't have an account"
+                : "Please enter a valid email"}
             </p>
             <div className="password-wrapper">
               <img src={passwordIcon} className="password" />
@@ -103,13 +146,25 @@ export default function Login() {
             <p>or continue with</p>
           </div>
           <div className="social-wrapper">
-            <a title="Google" href="http://localhost:5000/auth/google" className="google">
+            <a
+              title="Google"
+              href="http://localhost:5000/auth/google"
+              className="google"
+            >
               <img src={google} />
             </a>
-            <a title="Facebook" href="http://localhost:5000/auth/facebook" className="facebook">
+            <a
+              title="Facebook"
+              href="http://localhost:5000/auth/facebook"
+              className="facebook"
+            >
               <img src={facebook} />
             </a>
-            <a title="Twitter" href="http://localhost:5000/auth/twitter" className="twitter">
+            <a
+              title="Twitter"
+              href="http://localhost:5000/auth/twitter"
+              className="twitter"
+            >
               <img src={twitter} />
             </a>
           </div>

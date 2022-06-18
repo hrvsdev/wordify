@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import { validate } from "email-validator";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import takingNote from "../../assets/auth/adding-notes.svg";
 import wordify from "../../assets/auth/wordify.svg";
@@ -13,21 +13,66 @@ import userIcon from "../../assets/auth/user.svg";
 import eye from "../../assets/auth/eye.svg";
 import eyeOff from "../../assets/auth/eye-off.svg";
 
+import { Context } from "../../context/Context";
+import {
+  isEmailInvalid,
+  isNameShort,
+  isPassWeak,
+} from "../../helper/auth.helper";
+
 export default function Signup() {
-  const [showPassword, setShowPassword] = useState(false);
+  // Navigation hook
+  const navigate = useNavigate();
+
+  // Context
+  const { user, setUser } = useContext(Context);
+
+  // Input states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Show password state
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Signup response error state
+  const [signupErr, setSignupErr] = useState({});
+
+  // Show error states
   const [nameShort, setNameShort] = useState(false);
-  const [emailInvalid, setEmailInvalid] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [passwordInsecure, setPasswordInsecure] = useState(false);
 
+  // User data for signup
+  const userData = {
+    name: name.trim(),
+    email: email.trim(),
+    password: password.trim(),
+  };
+
+  // Signup function
+  const handleSignup = async () => {
+    const url = "http://localhost:5000/local/signup";
+    const nameErr = isNameShort(name, setNameShort);
+    const emailErr = isEmailInvalid(email, setEmailError);
+    const passErr = isPassWeak(password, setPasswordInsecure);
+    if (nameErr || emailErr || passErr) return;
+
+    try {
+      const res = await axios.post(url, userData, { withCredentials: true });
+      setUser(res.data.user);
+      navigate("/");
+    } catch (err) {
+      if (err.response.data.type === "EmailExist") setEmailError(true);
+      setSignupErr(err.response.data);
+    }
+  };
+
+  // Form submission function
   const formSubmit = (e) => {
     e.preventDefault();
-    setNameShort(name.trim().length >= 3 ? false : true);
-    setEmailInvalid(validate(email) ? false : true);
-    setPasswordInsecure(password.length >= 6 ? false : true);
+    setSignupErr({});
+    handleSignup();
   };
 
   return (
@@ -61,15 +106,17 @@ export default function Signup() {
             <div className="email-wrapper">
               <img src={emailIcon} className="email" />
               <input
-                className={emailInvalid ? "input-error" : null}
+                className={emailError ? "input-error" : null}
                 type="email"
                 placeholder="Enter your email"
                 id="email"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <p className={`error ${emailInvalid ? "show-error" : null}`}>
-              Please enter a valid email
+            <p className={`error ${emailError ? "show-error" : null}`}>
+              {signupErr.type === "EmailExist"
+                ? "Email is already in use"
+                : "Please enter a valid email"}
             </p>
             <div className="password-wrapper">
               <img src={passwordIcon} className="password" />

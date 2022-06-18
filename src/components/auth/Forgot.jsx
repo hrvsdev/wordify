@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { validate } from "email-validator";
-import { parse } from "query-string";
-import { AES, enc } from "crypto-js";
+import { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import forgotPassword from "../../assets/auth/forgot-password.svg";
 import wordify from "../../assets/auth/wordify.svg";
@@ -10,17 +8,58 @@ import passwordIcon from "../../assets/auth/password.svg";
 import eye from "../../assets/auth/eye.svg";
 import eyeOff from "../../assets/auth/eye-off.svg";
 
+import { Context } from "../../context/Context";
+import { isPassWeak } from "../../helper/auth.helper";
+
 export default function Forgot() {
-  const [showPassword, setShowPassword] = useState(false);
+  // Navigation hook
+  const navigate = useNavigate();
+
+  // Context
+  const { forgotEmail } = useContext(Context);
+
+  // Input states
   const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState("");
+  const [OTP, setOTP] = useState("");
 
+  // Show password state
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Error states
   const [passwordInsecure, setPasswordInsecure] = useState(false);
-  const [otpIncorrect, setOtpIncorrect] = useState(false);
+  const [OTPIncorrect, setOTPIncorrect] = useState(false);
 
-  const formSubmit = (e) => {
+  // Checking if user entered the URL manually or redirected
+  useEffect(() => {
+    !forgotEmail && navigate("/login");
+  }, []);
+
+  // OTP and password data
+  const OTPData = {
+    email: forgotEmail.trim(),
+    otp: OTP.trim(),
+    newPass: password.trim(),
+  };
+
+  // OTP verification and restore password function
+  const handleForgotPassword = async () => {
+    const passErr = isPassWeak(password, setPasswordInsecure);
+    if (passErr) return;
+    try {
+      const url = "http://localhost:5000/verify-otp";
+      await axios.post(url, OTPData);
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+      if (err.response.data.type === "IncOTP") return setOTPIncorrect(true);
+    }
+  };
+
+  // Form submission function
+  const formSubmit = async (e) => {
     e.preventDefault();
-    setPasswordInsecure(password.length >= 6 ? false : true);
+    setPasswordInsecure(false);
+    handleForgotPassword();
   };
 
   return (
@@ -38,24 +77,20 @@ export default function Forgot() {
           </div>
           <div className="forgot-send-to">
             A code is sent to&nbsp;
-            <span>
-              {AES.decrypt(parse(location.search).id, "MY_SECRET_KEY").toString(
-                enc.Utf8
-              )}
-            </span>
+            <span>{forgotEmail}</span>
           </div>
           <div className="input-wrapper">
             <div className="otp-wrapper">
               <img src={passwordIcon} className="otp" />
               <input
-                className={otpIncorrect ? "input-error" : null}
+                className={OTPIncorrect ? "input-error" : null}
                 type="text"
                 placeholder="Enter code"
                 id="otp"
-                onChange={(e) => setOtp(e.target.value)}
+                onChange={(e) => setOTP(e.target.value)}
               />
             </div>
-            <p className={`error ${otpIncorrect ? "show-error" : null}`}>
+            <p className={`error ${OTPIncorrect ? "show-error" : null}`}>
               Please enter correct OTP
             </p>
             <div className="password-wrapper">

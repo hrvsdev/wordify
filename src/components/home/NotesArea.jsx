@@ -1,4 +1,4 @@
-import { Outlet, useOutlet } from "react-router-dom";
+import {  useOutlet } from "react-router-dom";
 import NotesList from "./NotesList";
 import SingleNote from "./SingleNote";
 
