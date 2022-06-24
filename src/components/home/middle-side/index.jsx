@@ -1,28 +1,10 @@
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
 
 import plusIcon from "../../../assets/home/plus.svg";
-import {
-  convertDateToString,
-  extractTextFromHTML,
-  limitString,
-} from "../../../helper/note.helper";
 
-function NoteComponent({ to, title, category, content, time }) {
-  return (
-    <NavLink to={to} className="note-wrapper">
-      <p className="title">{title}</p>
-      <p className="description">{limitString(extractTextFromHTML(content))}</p>
-      <div className="note-bottom-wrapper">
-        <p className="time">{convertDateToString(time)}</p>
-        <p className="divider">|</p>
-        <p className="category">{category}</p>
-      </div>
-    </NavLink>
-  );
-}
+import NoteComponent from "./NoteComponent";
 
 export default function NotesList() {
   // Navigation hook
@@ -36,12 +18,10 @@ export default function NotesList() {
 
   // Getting notes
   const getNotes = async () => {
+    let url;
+    if (folder === "all") url = "http://localhost:5000/notes";
+    else url = `http://localhost:5000/${folder}/note`;
     try {
-      const url =
-        folder === "all"
-          ? "http://localhost:5000/notes"
-          : `http://localhost:5000/${folder}/note`;
-
       const res = await axios.get(url, { withCredentials: true });
       return setNotes(res.data.obj);
     } catch (err) {

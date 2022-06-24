@@ -1,0 +1,114 @@
+.right-side {
+    padding: 20px 40px;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    .upper-sec {
+      height: 68px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      .title-wrapper {
+        input {
+          all: unset;
+          box-shadow: none !important;
+          font-weight: 600;
+          font-size: 35px;
+          &::placeholder {
+            color: black;
+            opacity: 0.8;
+          }
+        }
+        .title {
+          font-weight: 600;
+          font-size: 35px;
+          color: black;
+        }
+        .untitle {
+          font-weight: 600;
+          font-size: 35px;
+          opacity: 0.5;
+          cursor: default;
+        }
+      }
+      .button-menu-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 15px;
+        .button-wrapper {
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          &:hover {
+            background-color: rgb(226, 226, 226);
+          }
+          .preview {
+            width: 24px;
+          }
+          .save {
+            width: 19px;
+          }
+        }
+      }
+    }
+    .note-info {
+      display: flex;
+      flex-direction: column;
+      row-gap: 4px;
+      margin-bottom: 24px;
+      div {
+        display: flex;
+        flex-direction: row;
+        .info-title {
+          width: 120px;
+          opacity: 0.8;
+        }
+        p {
+          font-size: 14px;
+        }
+        .info {
+          opacity: 0.9;
+        }
+      }
+      .category-wrapper {
+        margin-bottom: 5px;
+        p {
+          font-size: 16px;
+        }
+        .info {
+          font-weight: 500;
+        }
+        .uncategorized {
+          opacity: 0.5;
+        }
+        input {
+          all: unset;
+          box-shadow: none !important;
+          &::placeholder {
+            color: black;
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+    hr {
+      border: 0;
+      height: 0;
+      border-top: 1px solid #dcdcdc;
+      margin-bottom: 24px;
+    }
+  }
+  .editor-wrapper {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }

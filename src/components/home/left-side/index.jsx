@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 
@@ -10,20 +10,8 @@ import plusIcon from "../../../assets/home/plus.svg";
 import binIcon from "../../../assets/home/bin.svg";
 import logoutIcon from "../../../assets/home/logout.svg";
 
+import FolderButton from "./FolderButton";
 import { Context } from "../../../context/Context";
-
-// Folder Button Component
-function SideButton({ _id, name }) {
-  // Params
-  const { note } = useParams();
-
-  return (
-    <NavLink to={`${_id}/${note}`} className="side-button">
-      <img src={folderIcon} />
-      <p>{name}</p>
-    </NavLink>
-  );
-}
 
 export default function FolderMenu() {
   const navigate = useNavigate();
@@ -113,9 +101,9 @@ export default function FolderMenu() {
         </div>
       </div>
       <div className="middle-sec">
-        <SideButton _id="/all" name="All notes" />
+        <FolderButton _id="/all" name="All notes" />
         {folders.map((e) => (
-          <SideButton {...e} key={e._id} />
+          <FolderButton {...e} key={e._id} />
         ))}
         <div ref={addFolderRef} className="add-folder-input">
           <img className="folder-icon" src={folderIcon} />
