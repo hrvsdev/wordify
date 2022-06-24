@@ -1,23 +1,26 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 
-import searchIcon from "../../assets/home/search.svg";
-import folderIcon from "../../assets/home/folder.svg";
-import addFolderIcon from "../../assets/home/add-folder.svg";
-import checkIcon from "../../assets/home/check.svg";
-import plusIcon from "../../assets/home/plus.svg";
-import binIcon from "../../assets/home/bin.svg";
-import logoutIcon from "../../assets/home/logout.svg";
+import searchIcon from "../../../assets/home/search.svg";
+import folderIcon from "../../../assets/home/folder.svg";
+import addFolderIcon from "../../../assets/home/add-folder.svg";
+import checkIcon from "../../../assets/home/check.svg";
+import plusIcon from "../../../assets/home/plus.svg";
+import binIcon from "../../../assets/home/bin.svg";
+import logoutIcon from "../../../assets/home/logout.svg";
 
-import { Context } from "../../context/Context";
+import { Context } from "../../../context/Context";
 
 // Folder Button Component
-function SideButton({ to, title }) {
+function SideButton({ _id, name }) {
+  // Params
+  const { note } = useParams();
+
   return (
-    <NavLink to={to} className="side-button">
+    <NavLink to={`${_id}/${note}`} className="side-button">
       <img src={folderIcon} />
-      <p>{title}</p>
+      <p>{name}</p>
     </NavLink>
   );
 }
@@ -25,19 +28,17 @@ function SideButton({ to, title }) {
 export default function FolderMenu() {
   const navigate = useNavigate();
 
+  // Context
+  const { user, folders, setFolders } = useContext(Context);
+
+  // New folder input state
+  const [folderName, setFolderName] = useState("");
+
+  // Element refs
   const addFolderRef = useRef();
   const addFolderInputRef = useRef();
   const logoutCheckRef = useRef();
   const logoutBoxRef = useRef();
-
-  // Context
-  const { user } = useContext(Context);
-
-  // Fake folders
-  const [folders, setFolders] = useState([
-    { to: "study", title: "Study notes" },
-    { to: "personal", title: "Personal notes" },
-  ]);
 
   // Showing input box for folder
   const addFolderFunc = () => {
@@ -45,12 +46,33 @@ export default function FolderMenu() {
     addFolderInputRef.current.focus();
   };
 
-  // Adding a folder
-  const addFolderCheckFunc = () => {
-    const folderName = addFolderInputRef.current.value;
-    if (folderName) {
-      setFolders((prev) => [...prev, { to: folderName, title: folderName }]);
-      navigate(folderName);
+  // Getting folders
+  const getFolders = async () => {
+    const url = "http://localhost:5000/folders";
+    try {
+      const res = await axios.get(url, { withCredentials: true });
+      setFolders(res.data.obj);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
+  // Creating a folder
+  const createFolder = async () => {
+    const url = "http://localhost:5000/folder";
+    const data = { name: folderName.trim() };
+    try {
+      await axios.post(url, data, { withCredentials: true });
+      getFolders();
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
+  // Handling creating a folder
+  const handleCreateFolder = () => {
+    if (folderName.trim()) {
+      createFolder();
     }
     addFolderRef.current.classList.remove("show");
     addFolderInputRef.current.value = "";
@@ -73,6 +95,11 @@ export default function FolderMenu() {
     }
   };
 
+  // Running functions on first load
+  useEffect(() => {
+    getFolders();
+  }, []);
+
   return (
     <div className="left-side">
       <div className="upper-sec">
@@ -86,9 +113,9 @@ export default function FolderMenu() {
         </div>
       </div>
       <div className="middle-sec">
-        <SideButton to="/" title="All notes" />
+        <SideButton _id="/all" name="All notes" />
         {folders.map((e) => (
-          <SideButton {...e} key={e.to} />
+          <SideButton {...e} key={e._id} />
         ))}
         <div ref={addFolderRef} className="add-folder-input">
           <img className="folder-icon" src={folderIcon} />
@@ -97,16 +124,13 @@ export default function FolderMenu() {
             type="text"
             maxLength="14"
             placeholder="Folder name"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                addFolderCheckFunc();
-              }
-            }}
+            onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
+            onChange={(e) => setFolderName(e.target.value)}
           />
           <img
             className="plus-icon"
             src={plusIcon}
-            onClick={addFolderCheckFunc}
+            onClick={handleCreateFolder}
           />
         </div>
         <div className="add-folder" onClick={addFolderFunc}>

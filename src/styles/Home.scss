@@ -188,12 +188,16 @@
       align-items: center;
       padding: 14px 20px;
       border-radius: 10px;
-      cursor: pointer;
+      color: black;
+      &:hover {
+        background-color: #e7f5ff;
+      }
       img {
         width: 24px;
         margin-right: 20px;
       }
     }
+
     .notes-list-wrapper {
       display: flex;
       flex-direction: column;
@@ -203,40 +207,40 @@
       &::-webkit-scrollbar {
         display: none;
       }
-      .note-wrapper {
-        background-color: #f6f6f6;
-        border-radius: 10px;
+    }
+    .note-wrapper {
+      background-color: #f6f6f6;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px;
+      row-gap: 6px;
+      &:hover {
+        background-color: #e7f5ff;
+      }
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: black;
+      }
+      .description {
+        font-size: 15px;
+        color: rgba(0, 0, 0, 0.8);
+      }
+      .note-bottom-wrapper {
         display: flex;
-        flex-direction: column;
-        padding: 14px 16px;
-        row-gap: 6px;
-        &:hover {
-          background-color: #e7f5ff;
-        }
-        .title {
-          font-size: 18px;
-          font-weight: 600;
-          color: black;
-        }
-        .description {
-          font-size: 15px;
-          color: rgba(0, 0, 0, 0.8);
-        }
-        .note-bottom-wrapper {
-          display: flex;
-          color: rgba(0, 0, 0, 0.7);
-          font-size: 13px;
-          column-gap: 6px;
-          .time,
-          .category {
-            letter-spacing: 0.7px;
-          }
+        color: rgba(0, 0, 0, 0.7);
+        font-size: 13px;
+        column-gap: 6px;
+        .time,
+        .category {
+          letter-spacing: 0.7px;
         }
       }
-      .active,
-      .active:hover {
-        background-color: #cdeaff;
-      }
+    }
+    .active,
+    .active:hover {
+      background-color: #cdeaff;
     }
   }
   .right-side {
@@ -326,7 +330,7 @@
         .info {
           font-weight: 500;
         }
-        .uncategorized{
+        .uncategorized {
           opacity: 0.5;
         }
         input {
@@ -351,17 +355,6 @@
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
-    }
-    .ql-editor {
-      p,
-      li {
-        font-size: 15px;
-      }
-      code {
-        font-size: 13px;
-        font-family: "Cascadia Code";
-        font-weight: 100;
-      }
     }
   }
 }

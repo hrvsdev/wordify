@@ -1,12 +1,13 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
+
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
-import Home from "./components/home/Home";
 import Forgot from "./components/auth/Forgot";
-import NotesArea from "./components/home/NotesArea";
-import SingleNote from "./components/home/SingleNote";
+
+import Home from "./components/home/main/Home"
+import NotesArea from "./components/home/main/NotesArea";
+import SingleNote from "./components/home/right-side";
 import ContextProvider from "./context/Context";
-import "./components/auth/Auth.scss";
 
 export default function App() {
   return (

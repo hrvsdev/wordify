@@ -1,26 +1,77 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-import previewIcon from "../../assets/home/preview.svg";
-import editIcon from "../../assets/home/edit.svg";
-import saveIcon from "../../assets/home/save.svg";
+import previewIcon from "../../../assets/home/preview.svg";
+import saveIcon from "../../../assets/home/save.svg";
 
-import { RichTextEditor } from "@mantine/rte";
-import editorConfig from "./editorConfig";
+import { createReactEditorJS } from "react-editor-js";
 
 export default function SingleNote() {
+  // Parameters
+  const { folder, note } = useParams();
+
+  // Create a new instance
+  const ReactEditorJS = createReactEditorJS();
+
+  // Input states
   const [titleValue, setTitleValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
   const [editorValue, setEditorValue] = useState("Start writing from here ...");
+
+  // Editor preview state
   const [previewEditor, setPreviewEditor] = useState(false);
 
+  // Preview button handler
   const handlePreview = () => {
     setPreviewEditor((prev) => !prev);
   };
 
+  // Creating a note
+  const createNote = async () => {
+    try {
+      const url =
+        folder === "add"
+          ? "http://localhost:5000/note"
+          : `http://localhost:5000/${folder}/note`;
+
+      const data = {
+        title: titleValue,
+        category: categoryValue,
+        content: editorValue,
+      };
+      const res = await axios.post(url, data, { withCredentials: true });
+      console.log(res.data);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
+  // Getting a note
+  const getNote = async () => {
+    const url = `http://localhost:5000/note/${note}`;
+    try {
+      const res = await axios.get(url, { withCredentials: true });
+      const note = res.data.obj;
+      setTitleValue(note.title);
+      setCategoryValue(note.category);
+      setEditorValue(note.content);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  };
+
+  // Save button handler
   const handleSave = () => {
     setPreviewEditor(true);
-    console.log(editorValue);
+    createNote();
   };
+
+  // Running functions on first load
+  useEffect(() => {
+    console.log("Single Note");
+    getNote();
+  }, [note]);
 
   return (
     <div className="right-side">
@@ -89,12 +140,13 @@ export default function SingleNote() {
       </div>
       <hr />
       <div className="editor-wrapper">
-        <RichTextEditor
+        <ReactEditorJS placeholder="Enter Text here"/>
+        {/* <RichTextEditor
           value={editorValue}
           controls={editorConfig}
           onChange={setEditorValue}
           readOnly={previewEditor}
-        />
+        /> */}
       </div>
     </div>
   );
