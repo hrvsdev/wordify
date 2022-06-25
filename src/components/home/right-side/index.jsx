@@ -5,19 +5,16 @@ import { useParams } from "react-router-dom";
 import previewIcon from "../../../assets/home/preview.svg";
 import saveIcon from "../../../assets/home/save.svg";
 
-import { createReactEditorJS } from "react-editor-js";
+import { Title, Category } from "./Inputs";
 
 export default function SingleNote() {
   // Parameters
   const { folder, note } = useParams();
 
-  // Create a new instance
-  const ReactEditorJS = createReactEditorJS();
-
   // Input states
   const [titleValue, setTitleValue] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
-  const [editorValue, setEditorValue] = useState("Start writing from here ...");
+  const [editorValue, setEditorValue] = useState("");
 
   // Editor preview state
   const [previewEditor, setPreviewEditor] = useState(false);
@@ -29,19 +26,16 @@ export default function SingleNote() {
 
   // Creating a note
   const createNote = async () => {
+    let url;
+    if (folder === "all") url = "http://localhost:5000/note";
+    else url = `http://localhost:5000/${folder}/note`;
     try {
-      const url =
-        folder === "add"
-          ? "http://localhost:5000/note"
-          : `http://localhost:5000/${folder}/note`;
-
       const data = {
         title: titleValue,
         category: categoryValue,
         content: editorValue,
       };
-      const res = await axios.post(url, data, { withCredentials: true });
-      console.log(res.data);
+      await axios.post(url, data, { withCredentials: true });
     } catch (err) {
       console.log(err.response.data);
     }
@@ -69,37 +63,31 @@ export default function SingleNote() {
 
   // Running functions on first load
   useEffect(() => {
-    console.log("Single Note");
-    getNote();
+    if (!(note === "add")) getNote();
   }, [note]);
+
+  // Inputs Component Props
+  const inputProps = {
+    title: {
+      previewEditor,
+      titleValue,
+      setTitleValue,
+    },
+    category: {
+      previewEditor,
+      categoryValue,
+      setCategoryValue,
+    },
+  };
 
   return (
     <div className="right-side">
       <div className="upper-sec">
         <div className="title-wrapper">
-          {previewEditor ? (
-            titleValue.trim() ? (
-              <div className="title">{titleValue}</div>
-            ) : (
-              <div className="untitle">Untitled note</div>
-            )
-          ) : (
-            <input
-              type="text"
-              placeholder="Enter note title"
-              value={titleValue}
-              onChange={(e) => {
-                setTitleValue(e.target.value);
-              }}
-            />
-          )}
+          <Title {...inputProps.title} />
         </div>
         <div className="button-menu-wrapper">
-          <div
-            className="button-wrapper"
-            title="Preview"
-            onClick={handlePreview}
-          >
+          <div className="button-wrapper" onClick={handlePreview}>
             <img className="preview" src={previewIcon} />
           </div>
           <div className="button-wrapper" title="Save" onClick={handleSave}>
@@ -110,24 +98,9 @@ export default function SingleNote() {
       <div className="note-info">
         <div className="category-wrapper">
           <p className="info-title">Category</p>
-          <p className="info">
-            {previewEditor ? (
-              categoryValue.trim() ? (
-                <div className="category">{categoryValue}</div>
-              ) : (
-                <div className="uncategorized">Uncategorized</div>
-              )
-            ) : (
-              <input
-                type="text"
-                placeholder="Enter category here"
-                value={categoryValue}
-                onChange={(e) => {
-                  setCategoryValue(e.target.value);
-                }}
-              />
-            )}
-          </p>
+          <div className="info">
+            <Category {...inputProps.category} />
+          </div>
         </div>
         <div className="created-wrapper">
           <p className="info-title">Created at</p>
@@ -139,15 +112,7 @@ export default function SingleNote() {
         </div>
       </div>
       <hr />
-      <div className="editor-wrapper">
-        <ReactEditorJS placeholder="Enter Text here"/>
-        {/* <RichTextEditor
-          value={editorValue}
-          controls={editorConfig}
-          onChange={setEditorValue}
-          readOnly={previewEditor}
-        /> */}
-      </div>
+      <div className="editor-wrapper"></div>
     </div>
   );
 }

@@ -5,16 +5,16 @@ import {
   extractTextFromHTML,
 } from "../../../helper/note.helper";
 
-export default function NoteComponent({ to, title, category, content, time }) {
-  return (
-    <NavLink to={to} className="note-wrapper">
-      <p className="title">{title}</p>
-      <p className="description">{extractTextFromHTML(content)}</p>
+export default function NoteComponent({ notes }) {
+  return notes.map((e) => (
+    <NavLink to={e._id} key={e._id} className="note-wrapper">
+      <p className="title">{e.title}</p>
+      <p className="description">{extractTextFromHTML(e.content)}</p>
       <div className="note-bottom-wrapper">
-        <p className="time">{convertDateToString(time)}</p>
+        <p className="time">{convertDateToString(e.time)}</p>
         <p className="divider">|</p>
-        <p className="category">{category}</p>
+        <p className="category">{e.category}</p>
       </div>
     </NavLink>
-  );
+  ));
 }

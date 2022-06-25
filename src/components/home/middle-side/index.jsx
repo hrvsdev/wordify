@@ -23,6 +23,7 @@ export default function NotesList() {
     else url = `http://localhost:5000/${folder}/note`;
     try {
       const res = await axios.get(url, { withCredentials: true });
+      console.log(res.data.obj)
       return setNotes(res.data.obj);
     } catch (err) {
       console.log(err.response.data);
@@ -45,9 +46,7 @@ export default function NotesList() {
         <p>Add a new note</p>
       </NavLink>
       <div className="notes-list-wrapper">
-        {notes.map((e) => (
-          <NoteComponent key={e._id} to={e._id} {...e} />
-        ))}
+        <NoteComponent notes={notes} />
       </div>
     </div>
   );
